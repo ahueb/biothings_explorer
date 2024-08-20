@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "bte-trapi.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "bte-trapi.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "bte-trapi.name" . }}
+    spec:
+      containers:
+        - name: bte
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - containerPort: 3000
+          env:
+            {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $value }}
+            {{- end }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /usr/local/etc/redis/redis.conf
+              subPath: redis.conf
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+        - name: redis
+          image: "{{ .Values.redis.image }}"
+          command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+          volumeMounts:
+            - name: redis-config-volume
+              mountPath: /usr/local/etc/redis/redis.conf
+              subPath: redis.conf
+      volumes:
+        - name: redis-config-volume
+          configMap:
+            name: redis-config

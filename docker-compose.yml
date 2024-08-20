@@ -2,15 +2,17 @@ version: '3'
 services:
   bte:
     container_name: bte-trapi
-    restart: on-failure
+    restart: always
     build: .
     image: biothings/bte-trapi
     ports:
       - '3000:3000'
     env_file: .compose-env
+    depends_on:
+      - redis
   redis:
     container_name: bte-redis
-    restart: on-failure
+    restart: always
     image: "redis:alpine"
     volumes:
       - ./.redis.conf:/usr/local/etc/redis/redis.conf
