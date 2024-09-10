@@ -2,14 +2,14 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "bte-trapi.fullname" . }}
+  name: {{ include "bte-trapi-chart.fullname" . }}
   labels:
-    {{- include "bte-trapi.labels" . | nindent 4 }}
+    {{- include "bte-trapi-chart.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "bte-trapi.fullname" . }}
+    name: {{ include "bte-trapi-chart.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:

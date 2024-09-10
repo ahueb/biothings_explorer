@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: biothings/bte-trapi
+  repository: ahueb1/bte-trapi
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
